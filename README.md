@@ -1,4 +1,4 @@
-# Aurum Visualization Dashboard
+# Visualization Dashboard
 
 An interactive dashboard for visualizing transportation data built with Streamlit and Plotly.
 
