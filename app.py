@@ -33,7 +33,7 @@ import translations as tr
 # Set page configuration with favicon
 st.set_page_config(
     page_title="Visualization Dashboard",
-    page_icon="C:/Users/ATK/Desktop/aurum-visualization/logo.png",
+    page_icon="logo.png",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -489,7 +489,7 @@ def main():
 
     # Sidebar
     with st.sidebar:
-        st.image("C:/Users/ATK/Desktop/aurum-visualization/logo.png", width=80)
+        st.image("logo.png", width=80)
 
         # Language selector
         st.markdown(f"### {tr.get_text('language', st.session_state.language)}")
