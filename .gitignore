@@ -1,0 +1,28 @@
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE files
+.vs/
+.vscode/
+.idea/
+
+# Temporary files
+temp_*
+*.tmp
+
+# Exported visualizations
+exports/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
