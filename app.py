@@ -26,126 +26,442 @@ import streamlit.components.v1 as components
 # Import custom modules
 import data_processor as dp
 import visualizations as viz
+import translations as tr
 
-# Set page configuration
+# Page configuration is set below
+
+# Set page configuration with favicon
 st.set_page_config(
-    page_title="Aurum Visualization",
-    page_icon="🏆",
+    page_title="Visualization Dashboard",
+    page_icon="C:/Users/ATK/Desktop/aurum-visualization/logo.png",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Add custom CSS for enhanced UI
+# Add custom CSS for Material Design 3 Expressive styling
 st.markdown("""
 <style>
-    /* Main header styling */
+    /* Material Design 3 Expressive color palette - more vibrant and dynamic */
+    :root {
+        /* Primary color - more vibrant purple */
+        --md-primary: #8B5CF6;
+        --md-primary-container: #F3E8FF;
+        --md-on-primary: #FFFFFF;
+        --md-on-primary-container: #4C1D95;
+
+        /* Secondary color - teal for contrast */
+        --md-secondary: #0EA5E9;
+        --md-secondary-container: #E0F2FE;
+        --md-on-secondary: #FFFFFF;
+        --md-on-secondary-container: #0C4A6E;
+
+        /* Tertiary color - coral for accent */
+        --md-tertiary: #F97316;
+        --md-tertiary-container: #FFEDD5;
+        --md-on-tertiary: #FFFFFF;
+        --md-on-tertiary-container: #7C2D12;
+
+        /* Error color - more vibrant red */
+        --md-error: #EF4444;
+        --md-error-container: #FEE2E2;
+        --md-on-error: #FFFFFF;
+        --md-on-error-container: #7F1D1D;
+
+        /* Background and surface colors - slightly warmer */
+        --md-background: #FEFBFF;
+        --md-on-background: #1A1523;
+        --md-surface: #FEFBFF;
+        --md-on-surface: #1A1523;
+        --md-surface-variant: #F1EAFF;
+        --md-on-surface-variant: #4A4458;
+
+        /* Other colors */
+        --md-outline: #7C7991;
+        --md-outline-variant: #D8D5E0;
+        --md-shadow: rgba(79, 70, 229, 0.15);
+        --md-scrim: rgba(79, 70, 229, 0.3);
+        --md-inverse-surface: #2E1065;
+        --md-inverse-on-surface: #F5F3FF;
+        --md-inverse-primary: #C4B5FD;
+
+        /* Additional expressive colors */
+        --md-accent-1: #EC4899;
+        --md-accent-2: #10B981;
+        --md-accent-3: #F59E0B;
+        --md-accent-4: #3B82F6;
+
+        /* Gradient backgrounds */
+        --md-gradient-1: linear-gradient(135deg, #8B5CF6 0%, #6366F1 100%);
+        --md-gradient-2: linear-gradient(135deg, #0EA5E9 0%, #3B82F6 100%);
+        --md-gradient-3: linear-gradient(135deg, #F97316 0%, #F59E0B 100%);
+    }
+
+    /* Main header styling - more expressive with gradient */
     .main-header {
-        font-size: 2.5rem;
-        color: #1E88E5;
+        font-size: 2.8rem;
+        background: var(--md-gradient-1);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
         text-align: center;
-        margin-bottom: 1.5rem;
-        padding: 1rem;
-        border-bottom: 2px solid #1E88E5;
-        font-weight: 600;
+        margin-bottom: 2rem;
+        padding: 1.2rem;
+        border-bottom: 3px solid var(--md-primary-container);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     }
 
-    /* Section header styling */
+    /* Section header styling - more dynamic */
     .sub-header {
-        font-size: 1.8rem;
-        color: #333;
-        padding: 0.5rem 0;
-        margin: 2rem 0 1rem 0;
-        border-bottom: 1px solid #ddd;
-        font-weight: 500;
+        font-size: 2rem;
+        color: var(--md-primary);
+        padding: 0.7rem 0;
+        margin: 2.5rem 0 1.5rem 0;
+        border-bottom: 2px solid var(--md-primary-container);
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        position: relative;
     }
 
-    /* Card styling for welcome message */
+    .sub-header::after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 60px;
+        height: 2px;
+        background: var(--md-primary);
+    }
+
+    /* Card styling - more expressive with subtle gradient and enhanced shadow */
     .card {
-        padding: 1.8rem;
-        border-radius: 0.5rem;
-        background-color: #f8f9fa;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        margin-bottom: 1.5rem;
-        border-left: 4px solid #1E88E5;
+        padding: 2rem;
+        border-radius: 24px;
+        background: linear-gradient(145deg, var(--md-surface) 0%, var(--md-surface-variant) 100%);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+        margin-bottom: 2rem;
+        border-left: 6px solid var(--md-primary);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-    /* Make buttons full width and improve appearance */
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    /* Make buttons more expressive with gradient and enhanced hover effects */
     .stButton>button {
         width: 100%;
-        font-weight: 500;
-        border-radius: 4px;
-        background-color: #1E88E5;
-        color: white;
+        font-weight: 600;
+        border-radius: 12px;
+        background: var(--md-gradient-1);
+        color: var(--md-on-primary);
         transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-size: 0.9rem;
+        padding: 0.7rem 1.2rem;
+        border: none;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     }
 
     .stButton>button:hover {
-        background-color: #1565C0;
         transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        opacity: 0.95;
     }
 
-    /* Improve sidebar appearance */
-    .css-1d391kg {
+    .stButton>button:active {
+        transform: translateY(0);
+    }
+
+    /* Improve sidebar appearance with subtle gradient */
+    .css-1d391kg, [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, var(--md-surface) 0%, var(--md-surface-variant) 100%);
         padding-top: 2rem;
+        box-shadow: inset -5px 0 15px -5px rgba(0, 0, 0, 0.05);
     }
 
-    /* Improve metric styling */
-    .css-1xarl3l {
-        font-size: 1.1rem;
+    /* Improve metric styling with more expressive colors */
+    .css-1xarl3l, [data-testid="stMetricValue"] {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--md-primary);
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    [data-testid="stMetricLabel"] {
         font-weight: 500;
+        color: var(--md-on-surface-variant);
+    }
+
+    [data-testid="stMetricDelta"] {
+        font-weight: 600;
     }
 
     /* Info text styling */
     .info-text {
-        font-size: 1rem;
-        color: #555;
-        line-height: 1.5;
+        font-size: 1.05rem;
+        color: var(--md-on-surface-variant);
+        line-height: 1.6;
+        letter-spacing: 0.01em;
     }
 
-    /* Improve table appearance */
+    /* Improve table appearance with more expressive styling */
     .dataframe {
-        border-collapse: collapse;
+        border-collapse: separate;
+        border-spacing: 0;
         width: 100%;
         border: none;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     }
 
     .dataframe th {
-        background-color: #f2f2f2;
-        padding: 8px;
+        background: var(--md-gradient-2);
+        color: var(--md-on-secondary);
+        padding: 14px;
         text-align: left;
-        border-bottom: 2px solid #ddd;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.1);
     }
 
     .dataframe td {
-        padding: 8px;
-        border-bottom: 1px solid #ddd;
+        padding: 14px;
+        border-bottom: 1px solid var(--md-outline-variant);
+        color: var(--md-on-surface);
+        transition: background-color 0.2s ease;
     }
 
-    /* Improve expander styling */
+    .dataframe tr:hover td {
+        background-color: var(--md-surface-variant);
+    }
+
+    .dataframe tr:last-child td {
+        border-bottom: none;
+    }
+
+    /* Improve expander styling with more expressive design */
     .streamlit-expanderHeader {
-        font-weight: 500;
-        color: #333;
+        font-weight: 600;
+        color: var(--md-on-surface);
+        background-color: var(--md-surface-variant);
+        border-radius: 12px;
+        padding: 0.8rem 1.2rem;
+        transition: all 0.2s ease;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
 
-    /* Improve tabs styling */
+    .streamlit-expanderHeader:hover {
+        background-color: var(--md-primary-container);
+        color: var(--md-on-primary-container);
+    }
+
+    .streamlit-expanderContent {
+        border-radius: 0 0 12px 12px;
+        padding-top: 1rem;
+    }
+
+    /* Improve tabs styling with more expressive design */
     .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
+        gap: 10px;
+        background-color: transparent;
+        border-bottom: 2px solid var(--md-outline-variant);
+        padding-bottom: 2px;
     }
 
     .stTabs [data-baseweb="tab"] {
-        height: 50px;
+        height: 54px;
         white-space: pre-wrap;
-        background-color: #f8f9fa;
-        border-radius: 4px 4px 0 0;
+        background-color: var(--md-surface);
+        border-radius: 12px 12px 0 0;
         gap: 1px;
-        padding-top: 10px;
-        padding-bottom: 10px;
+        padding: 12px 20px;
+        color: var(--md-on-surface-variant);
+        font-weight: 500;
+        transition: all 0.2s ease;
+        border: 1px solid var(--md-outline-variant);
+        border-bottom: none;
     }
 
     .stTabs [aria-selected="true"] {
-        background-color: #1E88E5;
+        background: var(--md-gradient-1);
+        color: var(--md-on-primary);
+        border: none;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    .stTabs [data-baseweb="tab"]:hover:not([aria-selected="true"]) {
+        background-color: var(--md-surface-variant);
+        transform: translateY(-2px);
+    }
+
+    /* Radio buttons styling - more expressive */
+    .stRadio [data-testid="stMarkdownContainer"] > p {
+        font-size: 1.05rem;
+        font-weight: 500;
+        color: var(--md-on-surface);
+    }
+
+    .stRadio label {
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .stRadio label:hover {
+        color: var(--md-primary);
+    }
+
+    /* Selectbox styling - more expressive */
+    .stSelectbox label {
+        color: var(--md-on-surface);
+        font-weight: 500;
+        font-size: 1.05rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .stSelectbox > div[data-baseweb="select"] {
+        border-radius: 12px;
+        transition: all 0.2s ease;
+        border: 2px solid var(--md-outline-variant);
+    }
+
+    .stSelectbox > div[data-baseweb="select"]:focus-within {
+        border-color: var(--md-primary);
+        box-shadow: 0 0 0 2px var(--md-primary-container);
+    }
+
+    /* Date input styling - more expressive */
+    .stDateInput label {
+        color: var(--md-on-surface);
+        font-weight: 500;
+        font-size: 1.05rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .stDateInput > div[data-baseweb="input"] {
+        border-radius: 12px;
+        transition: all 0.2s ease;
+        border: 2px solid var(--md-outline-variant);
+    }
+
+    .stDateInput > div[data-baseweb="input"]:focus-within {
+        border-color: var(--md-primary);
+        box-shadow: 0 0 0 2px var(--md-primary-container);
+    }
+
+    /* File uploader styling - more expressive */
+    .stFileUploader label {
+        color: var(--md-on-surface);
+        font-weight: 500;
+        font-size: 1.05rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .stFileUploader > div[data-testid="stFileUploader"] {
+        border-radius: 12px;
+        border: 2px dashed var(--md-outline-variant);
+        transition: all 0.2s ease;
+    }
+
+    .stFileUploader > div[data-testid="stFileUploader"]:hover {
+        border-color: var(--md-primary);
+        background-color: var(--md-primary-container);
+    }
+
+    /* Success message styling - more expressive */
+    .element-container div[data-testid="stAlert"] {
+        background: linear-gradient(135deg, #84cc16 0%, #22c55e 100%);
         color: white;
+        border-radius: 12px;
+        border: none;
+        padding: 0.8rem 1.2rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Error message styling - more expressive */
+    .element-container div[data-testid="stAlert"][data-baseweb="notification"] {
+        background: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
+        color: white;
+        border-radius: 12px;
+        border: none;
+        padding: 0.8rem 1.2rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Info message styling - more expressive */
+    .element-container div[data-testid="stAlert"][data-baseweb="notification"][kind="info"] {
+        background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%);
+        color: white;
+    }
+
+    /* Warning message styling - more expressive */
+    .element-container div[data-testid="stAlert"][data-baseweb="notification"][kind="warning"] {
+        background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+        color: white;
+    }
+
+    /* Markdown styling - more expressive */
+    .element-container [data-testid="stMarkdownContainer"] h1,
+    .element-container [data-testid="stMarkdownContainer"] h2,
+    .element-container [data-testid="stMarkdownContainer"] h3 {
+        color: var(--md-primary);
+        font-weight: 700;
+        letter-spacing: -0.01em;
+    }
+
+    .element-container [data-testid="stMarkdownContainer"] a {
+        color: var(--md-accent-4);
+        text-decoration: none;
+        font-weight: 500;
+        border-bottom: 1px solid transparent;
+        transition: all 0.2s ease;
+    }
+
+    .element-container [data-testid="stMarkdownContainer"] a:hover {
+        border-bottom-color: var(--md-accent-4);
+    }
+
+    /* Add animations for page load */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .main-header, .card, .sub-header {
+        animation: fadeIn 0.5s ease-out forwards;
+    }
+
+    .card {
+        animation-delay: 0.1s;
+    }
+
+    .sub-header {
+        animation-delay: 0.2s;
+    }
+
+    /* Scrollbar styling */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: var(--md-surface-variant);
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--md-primary);
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--md-primary);
+        opacity: 0.8;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -159,21 +475,47 @@ if 'date_filter' not in st.session_state:
     st.session_state.date_filter = None
 if 'scroll_to' not in st.session_state:
     st.session_state.scroll_to = None
+if 'language' not in st.session_state:
+    st.session_state.language = "my"  # Default language is Myanmar
+if 'auto_load_done' not in st.session_state:
+    st.session_state.auto_load_done = False  # Flag to track if we've already tried to auto-load
 
 
 def main():
     """Main function to run the Streamlit app"""
 
     # Header
-    st.markdown('<div class="main-header">Aurum Visualization Dashboard</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="main-header">{tr.get_text("app_title", st.session_state.language)}</div>', unsafe_allow_html=True)
 
     # Sidebar
     with st.sidebar:
-        st.image("https://img.icons8.com/color/96/000000/gold-medal--v1.png", width=80)
-        st.markdown("## Upload Data")
+        st.image("C:/Users/ATK/Desktop/aurum-visualization/logo.png", width=80)
+
+        # Language selector
+        st.markdown(f"### {tr.get_text('language', st.session_state.language)}")
+        language_options = {
+            "en": tr.get_text("english", st.session_state.language),
+            "my": tr.get_text("myanmar", st.session_state.language)
+        }
+        selected_language = st.radio(
+            label=tr.get_text("select_language", st.session_state.language),
+            options=list(language_options.keys()),
+            format_func=lambda x: language_options[x],
+            horizontal=True,
+            key="language_selector",
+            index=0 if st.session_state.language == "en" else 1,
+            label_visibility="hidden"  # Hide the label but provide it for accessibility
+        )
+
+        # Update language in session state if changed
+        if selected_language != st.session_state.language:
+            st.session_state.language = selected_language
+            st.rerun()
+
+        st.markdown(f"## {tr.get_text('upload_data', st.session_state.language)}")
 
         # File uploader in sidebar
-        uploaded_file = st.file_uploader("Upload Excel file", type=["xlsx", "xls"], key="sidebar_uploader")
+        uploaded_file = st.file_uploader(tr.get_text("upload_excel", st.session_state.language), type=["xlsx", "xls"], key="sidebar_uploader")
 
         if uploaded_file is not None:
             # Process the uploaded file
@@ -197,17 +539,17 @@ def main():
                 if df is not None and not df.empty:
                     st.session_state.data = df
                     st.session_state.file_uploaded = True
-                    st.success("Data loaded successfully!")
+                    st.success(f"{tr.get_text('data_loaded', st.session_state.language)}")
 
                     # Show data info
-                    st.markdown("### Data Summary")
-                    st.write(f"Total records: {len(df)}")
-                    st.write(f"Date range: {df['Loading Date'].min().strftime('%Y-%m-%d')} to {df['Loading Date'].max().strftime('%Y-%m-%d')}")
+                    st.markdown(f"### {tr.get_text('data_summary', st.session_state.language)}")
+                    st.write(f"{tr.get_text('total_records', st.session_state.language)}: {len(df)}")
+                    st.write(f"{tr.get_text('date_range', st.session_state.language)}: {df['Loading Date'].min().strftime('%Y-%m-%d')} to {df['Loading Date'].max().strftime('%Y-%m-%d')}")
 
                     # Date filter
-                    st.markdown("### Filter Data")
+                    st.markdown(f"### {tr.get_text('filter_data', st.session_state.language)}")
                     date_range = st.date_input(
-                        "Select date range",
+                        tr.get_text("select_date_range", st.session_state.language),
                         value=(df['Loading Date'].min().date(), df['Loading Date'].max().date()),
                         min_value=df['Loading Date'].min().date(),
                         max_value=df['Loading Date'].max().date()
@@ -217,15 +559,18 @@ def main():
                         start_date, end_date = date_range
                         st.session_state.date_filter = (start_date, end_date)
                 else:
-                    st.error("Error: Could not read data from the Excel file. Please check the format.")
+                    st.error(f"{tr.get_text('could_not_read', st.session_state.language)} {tr.get_text('check_format', st.session_state.language)}")
             except Exception as e:
                 st.error(f"Error processing file: {e}")
 
         # Enhanced data loading interface
-        st.markdown("### 📂 Data Source Selection")
+        st.markdown(f"### 📂 {tr.get_text('data_source_selection', st.session_state.language)}")
 
         # Create tabs for different data loading methods
-        data_tabs = st.tabs(["📊 Excel Files", "📤 Upload File"])
+        data_tabs = st.tabs([
+            f"📊 {tr.get_text('excel_files_tab', st.session_state.language)}",
+            f"📤 {tr.get_text('upload_file_tab', st.session_state.language)}"
+        ])
 
         with data_tabs[0]:
             # Check for available Excel files in the directory
@@ -238,32 +583,31 @@ def main():
                 alx_files = [f for f in excel_files if "alx" in f.lower()]
                 other_files = [f for f in excel_files if f not in retail_files + nepas_files + alx_files]
 
-                # Create a more organized selection interface
-                file_category = st.radio(
-                    "Select file category:",
-                    options=["All Files"] +
-                            (["Retail Files"] if retail_files else []) +
-                            (["NEPAS Files"] if nepas_files else []) +
-                            (["ALX Files"] if alx_files else []) +
-                            (["Other Files"] if other_files else []),
-                    horizontal=True
-                )
+                # Only show Retail Files and Other Files
+                display_files = retail_files if retail_files else other_files
 
-                # Filter files based on selected category
-                if file_category == "Retail Files":
-                    display_files = retail_files
-                elif file_category == "NEPAS Files":
-                    display_files = nepas_files
-                elif file_category == "ALX Files":
-                    display_files = alx_files
-                elif file_category == "Other Files":
-                    display_files = other_files
-                else:
-                    display_files = excel_files
+                # Auto-load the first retail file if available and not already loaded
+                if not st.session_state.auto_load_done and retail_files:
+                    st.session_state.auto_load_done = True
+                    selected_file = retail_files[0]
+
+                    try:
+                        # Try to load the selected file
+                        if os.path.exists(selected_file):
+                            # Read the data using our data processor
+                            df = dp.read_excel_data(selected_file)
+
+                            if df is not None and not df.empty:
+                                st.session_state.data = df
+                                st.session_state.file_uploaded = True
+                                st.success(f"✅ {selected_file} {tr.get_text('data_loaded', st.session_state.language)} ({len(df)} {tr.get_text('records', st.session_state.language)})")
+                    except Exception as e:
+                        # If auto-loading fails, we'll just continue with manual selection
+                        pass
 
                 # Add a dropdown to select which file to load
                 selected_file = st.selectbox(
-                    "Select Excel file:",
+                    tr.get_text("select_excel_file", st.session_state.language),
                     options=display_files,
                     index=0,
                     format_func=lambda x: f"{x} ({os.path.getsize(x) // 1024} KB)"
@@ -273,52 +617,60 @@ def main():
                 if selected_file:
                     file_stats = os.stat(selected_file)
                     st.info(f"""
-                    **File Information:**
-                    - Size: {file_stats.st_size // 1024} KB
-                    - Last Modified: {datetime.fromtimestamp(file_stats.st_mtime).strftime('%Y-%m-%d %H:%M:%S')}
+                    **{tr.get_text("file_information", st.session_state.language)}**
+                    - {tr.get_text("size", st.session_state.language)}: {file_stats.st_size // 1024} KB
+                    - {tr.get_text("last_modified", st.session_state.language)}: {datetime.fromtimestamp(file_stats.st_mtime).strftime('%Y-%m-%d')}
                     """)
 
                 # Load button with improved styling
-                if st.button(f"📥 Load {selected_file}", key="load_selected", use_container_width=True):
+                if st.button(
+                    label=f"📥 {tr.get_text('load_file', st.session_state.language)} {selected_file}",
+                    key="load_selected",
+                    use_container_width=True
+                ):
                     try:
                         # Try to load the selected file
                         if os.path.exists(selected_file):
                             # Show loading spinner
-                            with st.spinner(f"Loading data from {selected_file}..."):
+                            with st.spinner(f"{tr.get_text('loading_data', st.session_state.language)} {selected_file}..."):
                                 # Read the data using our data processor
                                 df = dp.read_excel_data(selected_file)
 
                                 if df is not None and not df.empty:
                                     st.session_state.data = df
                                     st.session_state.file_uploaded = True
-                                    st.success(f"✅ {selected_file} loaded successfully! ({len(df)} records)")
+                                    st.success(f"✅ {selected_file} {tr.get_text('data_loaded', st.session_state.language)} ({len(df)} {tr.get_text('records', st.session_state.language)})")
                                 else:
-                                    st.error(f"❌ Could not read data from {selected_file}. Please check the file format.")
+                                    st.error(f"❌ {tr.get_text('could_not_read', st.session_state.language)} {selected_file}. {tr.get_text('check_format', st.session_state.language)}")
                         else:
-                            st.error(f"❌ {selected_file} not found in the current directory.")
+                            st.error(f"❌ {selected_file} {tr.get_text('file_not_found', st.session_state.language)}")
                     except Exception as e:
-                        st.error(f"❌ Error loading data: {e}")
+                        st.error(f"❌ {tr.get_text('error_loading', st.session_state.language)} {e}")
             else:
-                st.warning("📝 No Excel files found in the current directory.")
-                st.info("Please upload a file using the 'Upload File' tab.")
+                st.warning(f"📝 {tr.get_text('no_excel_files', st.session_state.language)}")
+                st.info(f"{tr.get_text('upload_file_tab', st.session_state.language)}")
 
         with data_tabs[1]:
             # File uploader in tab
-            uploaded_file_tab = st.file_uploader("Upload Excel file", type=["xlsx", "xls"], key="tab_uploader")
+            uploaded_file_tab = st.file_uploader(tr.get_text("upload_excel", st.session_state.language), type=["xlsx", "xls"], key="tab_uploader")
 
             if uploaded_file_tab is not None:
                 try:
                     # Show file info
                     st.info(f"""
-                    **File Information:**
-                    - Name: {uploaded_file_tab.name}
-                    - Size: {uploaded_file_tab.size // 1024} KB
-                    - Type: {uploaded_file_tab.type}
+                    **{tr.get_text("file_information", st.session_state.language)}**
+                    - {tr.get_text("name", st.session_state.language)}: {uploaded_file_tab.name}
+                    - {tr.get_text("size", st.session_state.language)}: {uploaded_file_tab.size // 1024} KB
+                    - {tr.get_text("type", st.session_state.language)}: {uploaded_file_tab.type}
                     """)
 
                     # Save button
-                    if st.button("📥 Load Uploaded File", key="load_uploaded", use_container_width=True):
-                        with st.spinner("Processing uploaded file..."):
+                    if st.button(
+                        label=f"📥 {tr.get_text('load_file', st.session_state.language)} {uploaded_file_tab.name}",
+                        key="load_uploaded",
+                        use_container_width=True
+                    ):
+                        with st.spinner(f"{tr.get_text('loading_data', st.session_state.language)} {uploaded_file_tab.name}..."):
                             # Save the uploaded file temporarily
                             temp_file_path = os.path.join(".", uploaded_file_tab.name)
                             with open(temp_file_path, "wb") as f:
@@ -330,22 +682,22 @@ def main():
                             if df is not None and not df.empty:
                                 st.session_state.data = df
                                 st.session_state.file_uploaded = True
-                                st.success(f"✅ {uploaded_file_tab.name} loaded successfully! ({len(df)} records)")
+                                st.success(f"✅ {uploaded_file_tab.name} {tr.get_text('data_loaded', st.session_state.language)} ({len(df)} {tr.get_text('records', st.session_state.language)})")
                             else:
-                                st.error(f"❌ Could not read data from {uploaded_file_tab.name}. Please check the file format.")
+                                st.error(f"❌ {tr.get_text('could_not_read', st.session_state.language)} {uploaded_file_tab.name}. {tr.get_text('check_format', st.session_state.language)}")
                 except Exception as e:
-                    st.error(f"❌ Error processing uploaded file: {e}")
+                    st.error(f"❌ {tr.get_text('error_processing', st.session_state.language)} {e}")
             else:
-                st.info("📤 Drag and drop an Excel file here or click to browse")
+                st.info(f"📤 {tr.get_text('drag_drop', st.session_state.language)}")
 
         # Date filter
-        st.markdown("### Filter Data")
+        st.markdown(f"### {tr.get_text('filter_data', st.session_state.language)}")
         # Only show date filter if data is loaded
         if st.session_state.file_uploaded and st.session_state.data is not None:
             temp_df = st.session_state.data
             try:
                 date_range = st.date_input(
-                    "Select date range",
+                    tr.get_text("select_date_range", st.session_state.language),
                     value=(temp_df['Loading Date'].min().date(), temp_df['Loading Date'].max().date()),
                     min_value=temp_df['Loading Date'].min().date(),
                     max_value=temp_df['Loading Date'].max().date()
@@ -355,50 +707,71 @@ def main():
                     start_date, end_date = date_range
                     st.session_state.date_filter = (start_date, end_date)
             except Exception as e:
-                st.warning(f"Could not set date filter: {e}")
+                st.warning(f"{tr.get_text('could_not_set_filter', st.session_state.language)}: {e}")
         else:
-            st.info("Load data first to enable date filtering.")
+            st.info(f"{tr.get_text('load_data_first', st.session_state.language)}")
 
         # Enhanced Navigation
         st.markdown("---")
-        st.markdown("### 🧭 Dashboard Navigation")
+        st.markdown(f"### 🧭 {tr.get_text('dashboard_navigation', st.session_state.language)}")
 
         # Group navigation buttons by category
-        st.markdown("#### Overview")
-        if st.button("📊 Summary Statistics", key="nav_summary"):
+        st.markdown(f"#### {tr.get_text('overview', st.session_state.language)}")
+        if st.button(
+            label=f"📊 {tr.get_text('summary_statistics', st.session_state.language)}",
+            key="nav_summary"
+        ):
             st.session_state.scroll_to = "summary_stats"
 
-        st.markdown("#### Destination Analysis")
-        if st.button("🌎 Top Destinations", key="nav_destinations"):
+        st.markdown(f"#### {tr.get_text('destination_analysis', st.session_state.language)}")
+        if st.button(
+            label=f"🌎 {tr.get_text('top_destinations', st.session_state.language)}",
+            key="nav_destinations"
+        ):
             st.session_state.scroll_to = "top_destinations"
 
-        st.markdown("#### Cargo Analysis")
-        if st.button("📦 Loaded Quantity", key="nav_quantity"):
+        st.markdown(f"#### {tr.get_text('cargo_analysis', st.session_state.language)}")
+        if st.button(
+            label=f"📦 {tr.get_text('loaded_quantity', st.session_state.language)}",
+            key="nav_quantity"
+        ):
             st.session_state.scroll_to = "loaded_quantity"
 
-        st.markdown("#### Fleet Analysis")
-        if st.button("🏷️ Acquisition Types", key="nav_acquisition"):
+        st.markdown(f"#### {tr.get_text('fleet_analysis', st.session_state.language)}")
+        if st.button(
+            label=f"🏷️ {tr.get_text('acquisition_types', st.session_state.language)}",
+            key="nav_acquisition"
+        ):
             st.session_state.scroll_to = "acquisition_analysis"
 
-        if st.button("🚚 Truck Assignments", key="nav_trucks"):
+        if st.button(
+            label=f"🚚 {tr.get_text('truck_assignments', st.session_state.language)}",
+            key="nav_trucks"
+        ):
             st.session_state.scroll_to = "truck_assignments"
 
-        st.markdown("#### Personnel Analysis")
-        if st.button("👨‍✈️ Driver Assignments", key="nav_drivers"):
+        st.markdown(f"#### {tr.get_text('personnel_analysis', st.session_state.language)}")
+        if st.button(
+            label=f"👨‍✈️ {tr.get_text('driver_assignments', st.session_state.language)}",
+            key="nav_drivers"
+        ):
             st.session_state.scroll_to = "driver_assignments"
 
-        if st.button("👨‍🔧 Helper Assignments", key="nav_helpers"):
+        if st.button(
+            label=f"👨‍🔧 {tr.get_text('helper_assignments', st.session_state.language)}",
+            key="nav_helpers"
+        ):
             st.session_state.scroll_to = "helper_assignments"
 
         # Enhanced About section
         st.markdown("---")
-        st.markdown("### ℹ️ About Aurum Visualization")
+        st.markdown(f"### ℹ️ {tr.get_text('about_dashboard', st.session_state.language)}")
 
-        with st.expander("About This Dashboard", expanded=False):
-            st.markdown("""
-            ### Aurum Visualization Dashboard v2.0
+        with st.expander(tr.get_text("about_this_dashboard", st.session_state.language), expanded=False):
+            st.markdown(f"""
+            ### {tr.get_text("about_title", st.session_state.language)}
 
-            A comprehensive analytics tool designed for transportation and logistics data visualization.
+            {tr.get_text("about_description", st.session_state.language)}
 
             #### Data Requirements
 
@@ -433,9 +806,9 @@ def main():
             For support or feature requests, please contact the development team.
             """)
 
-        with st.expander("Tips & Tricks", expanded=False):
-            st.markdown("""
-            ### Getting the Most from Aurum Visualization
+        with st.expander(tr.get_text("tips_tricks", st.session_state.language), expanded=False):
+            st.markdown(f"""
+            ### {tr.get_text("getting_most", st.session_state.language)}
 
             #### Data Loading Tips
             - Use consistent data formats in your Excel files
@@ -454,7 +827,7 @@ def main():
             - Track loaded quantities to identify efficiency opportunities
             """)
 
-        with st.expander("Version History", expanded=False):
+        with st.expander(tr.get_text("version_history", st.session_state.language), expanded=False):
             st.markdown("""
             ### Version History
 
@@ -520,25 +893,30 @@ def main():
 
         # Create dashboard layout
         # Row 1: Enhanced Summary Statistics
-        st.markdown('<div id="summary_stats" class="sub-header">📊 Summary Statistics</div>', unsafe_allow_html=True)
+        st.markdown(f'<div id="summary_stats" class="sub-header">📊 {tr.get_text("summary_stats", st.session_state.language)}</div>', unsafe_allow_html=True)
 
         # Create tabs for different categories of statistics
-        stat_tabs = st.tabs(["📈 Overview", "🚚 Fleet", "👨‍✈️ Personnel", "📦 Cargo"])
+        stat_tabs = st.tabs([
+            f"📈 {tr.get_text('overview_tab', st.session_state.language)}",
+            f"🚚 {tr.get_text('fleet_tab', st.session_state.language)}",
+            f"👨‍✈️ {tr.get_text('personnel_tab', st.session_state.language)}",
+            f"📦 {tr.get_text('cargo_tab', st.session_state.language)}"
+        ])
 
         with stat_tabs[0]:
             # Overview statistics
-            st.markdown("### Key Metrics")
+            st.markdown(f"### {tr.get_text('key_metrics', st.session_state.language)}")
 
             # Display summary statistics in a grid with icons and better formatting
             col1, col2, col3 = st.columns(3)
             with col1:
-                st.metric("📝 Total Records", f"{stats['Total Records']:,}")
-                st.metric("📅 Date Range", stats['Date Range'])
+                st.metric(f"📝 {tr.get_text('total_records', st.session_state.language)}", f"{stats['Total Records']:,}")
+                st.metric(f"📅 {tr.get_text('date_range', st.session_state.language)}", stats['Date Range'])
             with col2:
-                st.metric("🌎 Unique Destinations", stats['Unique Destinations'])
+                st.metric(f"🌎 {tr.get_text('unique_destinations', st.session_state.language)}", stats['Unique Destinations'])
                 # Calculate average trips per destination
                 avg_trips_per_dest = stats['Total Records'] / stats['Unique Destinations'] if stats['Unique Destinations'] > 0 else 0
-                st.metric("🔄 Avg Trips per Destination", f"{avg_trips_per_dest:.1f}")
+                st.metric(f"🔄 {tr.get_text('avg_trips_per_destination', st.session_state.language)}", f"{avg_trips_per_dest:.1f}")
             with col3:
                 # Calculate total days in date range
                 try:
@@ -546,13 +924,13 @@ def main():
                     start_date = datetime.strptime(start_date, "%Y-%m-%d")
                     end_date = datetime.strptime(end_date, "%Y-%m-%d")
                     total_days = (end_date - start_date).days + 1
-                    st.metric("📆 Total Days", total_days)
+                    st.metric(label="📆 Total Days", value=total_days)
                     # Calculate average trips per day
                     avg_trips_per_day = stats['Total Records'] / total_days if total_days > 0 else 0
-                    st.metric("📊 Avg Trips per Day", f"{avg_trips_per_day:.1f}")
+                    st.metric(label="📊 Avg Trips per Day", value=f"{avg_trips_per_day:.1f}")
                 except:
-                    st.metric("📆 Total Days", "N/A")
-                    st.metric("📊 Avg Trips per Day", "N/A")
+                    st.metric(label="📆 Total Days", value="N/A")
+                    st.metric(label="📊 Avg Trips per Day", value="N/A")
 
         with stat_tabs[1]:
             # Fleet statistics
@@ -560,10 +938,10 @@ def main():
 
             col1, col2 = st.columns(2)
             with col1:
-                st.metric("🚚 Total Trucks", stats['Unique Trucks'])
+                st.metric(label="🚚 Total Trucks", value=stats['Unique Trucks'])
                 # Calculate average trips per truck
                 avg_trips_per_truck = stats['Total Records'] / stats['Unique Trucks'] if stats['Unique Trucks'] > 0 else 0
-                st.metric("🔄 Avg Trips per Truck", f"{avg_trips_per_truck:.1f}")
+                st.metric(label="🔄 Avg Trips per Truck", value=f"{avg_trips_per_truck:.1f}")
             with col2:
                 # Get acquisition type counts if available
                 if 'Acquisition Type' in df.columns:
@@ -571,8 +949,8 @@ def main():
                     lease_count = len(df[df['Acquisition Type'] == 'Lease'])
                     own_pct = own_count / len(df) * 100 if len(df) > 0 else 0
                     lease_pct = lease_count / len(df) * 100 if len(df) > 0 else 0
-                    st.metric("🏠 Own Trucks (%)", f"{own_pct:.1f}%")
-                    st.metric("📋 Leased Trucks (%)", f"{lease_pct:.1f}%")
+                    st.metric(label="🏠 Own Trucks (%)", value=f"{own_pct:.1f}%")
+                    st.metric(label="📋 Leased Trucks (%)", value=f"{lease_pct:.1f}%")
                 else:
                     st.info("Acquisition type data not available")
 
@@ -638,12 +1016,15 @@ def main():
             # Add export options
             export_col1, export_col2 = st.columns(2)
             with export_col1:
-                if st.button("Export Destination Chart as JPG", key="export_dest_jpg"):
+                if st.button(
+                    label=tr.get_text("export_as_jpg", st.session_state.language),
+                    key="export_dest_jpg"
+                ):
                     export_path = viz.export_figure_as_image(dest_chart, format='jpg')
                     if export_path:
                         st.success(f"Chart exported to {export_path}")
             with export_col2:
-                st.markdown(viz.get_image_download_link(dest_chart, format='jpg', link_text="Download Destination Chart"), unsafe_allow_html=True)
+                st.markdown(viz.get_image_download_link(dest_chart, format='jpg', link_text=tr.get_text("download_chart", st.session_state.language)), unsafe_allow_html=True)
 
         with col2:
             # Create the date chart
@@ -653,12 +1034,15 @@ def main():
             # Add export options
             export_col1, export_col2 = st.columns(2)
             with export_col1:
-                if st.button("Export Date Chart as JPG", key="export_date_jpg"):
+                if st.button(
+                    label=tr.get_text("export_as_jpg", st.session_state.language),
+                    key="export_date_jpg"
+                ):
                     export_path = viz.export_figure_as_image(date_chart, format='jpg')
                     if export_path:
                         st.success(f"Chart exported to {export_path}")
             with export_col2:
-                st.markdown(viz.get_image_download_link(date_chart, format='jpg', link_text="Download Date Chart"), unsafe_allow_html=True)
+                st.markdown(viz.get_image_download_link(date_chart, format='jpg', link_text=tr.get_text("download_chart", st.session_state.language)), unsafe_allow_html=True)
 
         # Row 3: Truck-Driver and Helper charts
         st.markdown('<div class="sub-header">Personnel Analysis</div>', unsafe_allow_html=True)
@@ -672,12 +1056,15 @@ def main():
             # Add export options
             export_col1, export_col2 = st.columns(2)
             with export_col1:
-                if st.button("Export Truck-Driver Chart as JPG", key="export_truck_driver_jpg"):
+                if st.button(
+                    label=tr.get_text("export_as_jpg", st.session_state.language),
+                    key="export_truck_driver_jpg"
+                ):
                     export_path = viz.export_figure_as_image(truck_driver_chart, format='jpg')
                     if export_path:
                         st.success(f"Chart exported to {export_path}")
             with export_col2:
-                st.markdown(viz.get_image_download_link(truck_driver_chart, format='jpg', link_text="Download Truck-Driver Chart"), unsafe_allow_html=True)
+                st.markdown(viz.get_image_download_link(truck_driver_chart, format='jpg', link_text=tr.get_text("download_chart", st.session_state.language)), unsafe_allow_html=True)
 
         with col2:
             # Create the helper chart
@@ -687,17 +1074,23 @@ def main():
             # Add export options
             export_col1, export_col2 = st.columns(2)
             with export_col1:
-                if st.button("Export Helper Chart as JPG", key="export_helper_jpg"):
+                if st.button(
+                    label=tr.get_text("export_as_jpg", st.session_state.language),
+                    key="export_helper_jpg"
+                ):
                     export_path = viz.export_figure_as_image(helper_chart, format='jpg')
                     if export_path:
                         st.success(f"Chart exported to {export_path}")
             with export_col2:
-                st.markdown(viz.get_image_download_link(helper_chart, format='jpg', link_text="Download Helper Chart"), unsafe_allow_html=True)
+                st.markdown(viz.get_image_download_link(helper_chart, format='jpg', link_text=tr.get_text("download_chart", st.session_state.language)), unsafe_allow_html=True)
 
         # Row 4: Advanced visualizations
         st.markdown('<div class="sub-header">Advanced Analysis</div>', unsafe_allow_html=True)
 
-        tab1, tab2 = st.tabs(["Truck-Destination Analysis", "Driver-Helper Network"])
+        tab1, tab2 = st.tabs([
+            f"{tr.get_text('truck_destination_analysis', st.session_state.language)}",
+            f"{tr.get_text('driver_helper_network', st.session_state.language)}"
+        ])
 
         with tab1:
             # Create the truck-destination chart
@@ -707,12 +1100,15 @@ def main():
             # Add export options
             export_col1, export_col2 = st.columns(2)
             with export_col1:
-                if st.button("Export Truck-Destination Chart as JPG", key="export_truck_dest_jpg"):
+                if st.button(
+                    label=tr.get_text("export_as_jpg", st.session_state.language),
+                    key="export_truck_dest_jpg"
+                ):
                     export_path = viz.export_figure_as_image(truck_dest_chart, format='jpg')
                     if export_path:
                         st.success(f"Chart exported to {export_path}")
             with export_col2:
-                st.markdown(viz.get_image_download_link(truck_dest_chart, format='jpg', link_text="Download Truck-Destination Chart"), unsafe_allow_html=True)
+                st.markdown(viz.get_image_download_link(truck_dest_chart, format='jpg', link_text=tr.get_text("download_chart", st.session_state.language)), unsafe_allow_html=True)
 
         with tab2:
             # Create the driver-helper network chart
@@ -722,12 +1118,15 @@ def main():
             # Add export options
             export_col1, export_col2 = st.columns(2)
             with export_col1:
-                if st.button("Export Network Chart as JPG", key="export_network_jpg"):
+                if st.button(
+                    label=tr.get_text("export_as_jpg", st.session_state.language),
+                    key="export_network_jpg"
+                ):
                     export_path = viz.export_figure_as_image(network_chart, format='jpg')
                     if export_path:
                         st.success(f"Chart exported to {export_path}")
             with export_col2:
-                st.markdown(viz.get_image_download_link(network_chart, format='jpg', link_text="Download Network Chart"), unsafe_allow_html=True)
+                st.markdown(viz.get_image_download_link(network_chart, format='jpg', link_text=tr.get_text("download_chart", st.session_state.language)), unsafe_allow_html=True)
 
         # Row 5: Top Destinations Analysis
         st.markdown('<div id="top_destinations" class="sub-header">Top Destinations Analysis</div>', unsafe_allow_html=True)
@@ -742,12 +1141,15 @@ def main():
         # Add export options
         export_col1, export_col2 = st.columns(2)
         with export_col1:
-            if st.button("Export Top Destinations Chart as JPG", key="export_top_routes_jpg"):
+            if st.button(
+                label=tr.get_text("export_as_jpg", st.session_state.language),
+                key="export_top_routes_jpg"
+            ):
                 export_path = viz.export_figure_as_image(top_routes_chart, format='jpg')
                 if export_path:
                     st.success(f"Chart exported to {export_path}")
         with export_col2:
-            st.markdown(viz.get_image_download_link(top_routes_chart, format='jpg', link_text="Download Top Destinations Chart"), unsafe_allow_html=True)
+            st.markdown(viz.get_image_download_link(top_routes_chart, format='jpg', link_text=tr.get_text("download_chart", st.session_state.language)), unsafe_allow_html=True)
 
         # Row 6: Loaded Quantity Analysis
         st.markdown('<div id="loaded_quantity" class="sub-header">Loaded Quantity Analysis</div>', unsafe_allow_html=True)
@@ -763,12 +1165,15 @@ def main():
         # Add export options
         export_col1, export_col2 = st.columns(2)
         with export_col1:
-            if st.button("Export Destination Quantity Chart as JPG", key="export_dest_quantity_jpg"):
+            if st.button(
+                label=tr.get_text("export_as_jpg", st.session_state.language),
+                key="export_dest_quantity_jpg"
+            ):
                 export_path = viz.export_figure_as_image(dest_quantity_chart, format='jpg')
                 if export_path:
                     st.success(f"Chart exported to {export_path}")
         with export_col2:
-            st.markdown(viz.get_image_download_link(dest_quantity_chart, format='jpg', link_text="Download Destination Quantity Chart"), unsafe_allow_html=True)
+            st.markdown(viz.get_image_download_link(dest_quantity_chart, format='jpg', link_text=tr.get_text("download_chart", st.session_state.language)), unsafe_allow_html=True)
 
         # Display the truck quantity and time quantity charts side by side
         col1, col2 = st.columns(2)
@@ -778,12 +1183,15 @@ def main():
             # Add export options
             export_col1, export_col2 = st.columns(2)
             with export_col1:
-                if st.button("Export Truck Quantity Chart as JPG", key="export_truck_quantity_jpg"):
+                if st.button(
+                    label=tr.get_text("export_as_jpg", st.session_state.language),
+                    key="export_truck_quantity_jpg"
+                ):
                     export_path = viz.export_figure_as_image(truck_quantity_chart, format='jpg')
                     if export_path:
                         st.success(f"Chart exported to {export_path}")
             with export_col2:
-                st.markdown(viz.get_image_download_link(truck_quantity_chart, format='jpg', link_text="Download Truck Quantity Chart"), unsafe_allow_html=True)
+                st.markdown(viz.get_image_download_link(truck_quantity_chart, format='jpg', link_text=tr.get_text("download_chart", st.session_state.language)), unsafe_allow_html=True)
 
         with col2:
             st.plotly_chart(time_quantity_chart, use_container_width=True)
@@ -791,12 +1199,15 @@ def main():
             # Add export options
             export_col1, export_col2 = st.columns(2)
             with export_col1:
-                if st.button("Export Time Quantity Chart as JPG", key="export_time_quantity_jpg"):
+                if st.button(
+                    label=tr.get_text("export_as_jpg", st.session_state.language),
+                    key="export_time_quantity_jpg"
+                ):
                     export_path = viz.export_figure_as_image(time_quantity_chart, format='jpg')
                     if export_path:
                         st.success(f"Chart exported to {export_path}")
             with export_col2:
-                st.markdown(viz.get_image_download_link(time_quantity_chart, format='jpg', link_text="Download Time Quantity Chart"), unsafe_allow_html=True)
+                st.markdown(viz.get_image_download_link(time_quantity_chart, format='jpg', link_text=tr.get_text("download_chart", st.session_state.language)), unsafe_allow_html=True)
 
         # Row 7: Acquisition Type Analysis
         st.markdown('<div id="acquisition_analysis" class="sub-header">Acquisition Type Analysis</div>', unsafe_allow_html=True)
@@ -812,12 +1223,15 @@ def main():
             # Add export options
             export_col1, export_col2 = st.columns(2)
             with export_col1:
-                if st.button("Export Acquisition Pie Chart as JPG", key="export_acquisition_pie_jpg"):
+                if st.button(
+                    label=tr.get_text("export_as_jpg", st.session_state.language),
+                    key="export_acquisition_pie_jpg"
+                ):
                     export_path = viz.export_figure_as_image(acquisition_pie, format='jpg')
                     if export_path:
                         st.success(f"Chart exported to {export_path}")
             with export_col2:
-                st.markdown(viz.get_image_download_link(acquisition_pie, format='jpg', link_text="Download Acquisition Pie Chart"), unsafe_allow_html=True)
+                st.markdown(viz.get_image_download_link(acquisition_pie, format='jpg', link_text=tr.get_text("download_chart", st.session_state.language)), unsafe_allow_html=True)
 
         with col2:
             st.plotly_chart(acquisition_bar, use_container_width=True)
@@ -825,12 +1239,15 @@ def main():
             # Add export options
             export_col1, export_col2 = st.columns(2)
             with export_col1:
-                if st.button("Export Acquisition Bar Chart as JPG", key="export_acquisition_bar_jpg"):
+                if st.button(
+                    label=tr.get_text("export_as_jpg", st.session_state.language),
+                    key="export_acquisition_bar_jpg"
+                ):
                     export_path = viz.export_figure_as_image(acquisition_bar, format='jpg')
                     if export_path:
                         st.success(f"Chart exported to {export_path}")
             with export_col2:
-                st.markdown(viz.get_image_download_link(acquisition_bar, format='jpg', link_text="Download Acquisition Bar Chart"), unsafe_allow_html=True)
+                st.markdown(viz.get_image_download_link(acquisition_bar, format='jpg', link_text=tr.get_text("download_chart", st.session_state.language)), unsafe_allow_html=True)
 
         # Row 7: Truck Assignments Analysis
         st.markdown('<div id="truck_assignments" class="sub-header">Truck Assignments Analysis</div>', unsafe_allow_html=True)
@@ -844,12 +1261,15 @@ def main():
         # Add export options
         export_col1, export_col2 = st.columns(2)
         with export_col1:
-            if st.button("Export Truck Assignments Chart as JPG", key="export_truck_assignments_jpg"):
+            if st.button(
+                label=tr.get_text("export_as_jpg", st.session_state.language),
+                key="export_truck_assignments_jpg"
+            ):
                 export_path = viz.export_figure_as_image(truck_assignments_chart, format='jpg')
                 if export_path:
                     st.success(f"Chart exported to {export_path}")
         with export_col2:
-            st.markdown(viz.get_image_download_link(truck_assignments_chart, format='jpg', link_text="Download Truck Assignments Chart"), unsafe_allow_html=True)
+            st.markdown(viz.get_image_download_link(truck_assignments_chart, format='jpg', link_text=tr.get_text("download_chart", st.session_state.language)), unsafe_allow_html=True)
 
         # Row 7: Driver Assignments Analysis
         st.markdown('<div id="driver_assignments" class="sub-header">Driver Assignments Analysis</div>', unsafe_allow_html=True)
@@ -864,12 +1284,15 @@ def main():
         # Add export options
         export_col1, export_col2 = st.columns(2)
         with export_col1:
-            if st.button("Export Driver Assignments Chart as JPG", key="export_driver_assignments_jpg"):
+            if st.button(
+                label=tr.get_text("export_as_jpg", st.session_state.language),
+                key="export_driver_assignments_jpg"
+            ):
                 export_path = viz.export_figure_as_image(driver_assignments_chart, format='jpg')
                 if export_path:
                     st.success(f"Chart exported to {export_path}")
         with export_col2:
-            st.markdown(viz.get_image_download_link(driver_assignments_chart, format='jpg', link_text="Download Driver Assignments Chart"), unsafe_allow_html=True)
+            st.markdown(viz.get_image_download_link(driver_assignments_chart, format='jpg', link_text=tr.get_text("download_chart", st.session_state.language)), unsafe_allow_html=True)
 
         # Row 8: Helper Assignments Analysis
         st.markdown('<div id="helper_assignments" class="sub-header">Helper Assignments Analysis</div>', unsafe_allow_html=True)
@@ -884,23 +1307,26 @@ def main():
         # Add export options
         export_col1, export_col2 = st.columns(2)
         with export_col1:
-            if st.button("Export Helper Assignments Chart as JPG", key="export_helper_assignments_jpg"):
+            if st.button(
+                label=tr.get_text("export_as_jpg", st.session_state.language),
+                key="export_helper_assignments_jpg"
+            ):
                 export_path = viz.export_figure_as_image(helper_assignments_chart, format='jpg')
                 if export_path:
                     st.success(f"Chart exported to {export_path}")
         with export_col2:
-            st.markdown(viz.get_image_download_link(helper_assignments_chart, format='jpg', link_text="Download Helper Assignments Chart"), unsafe_allow_html=True)
+            st.markdown(viz.get_image_download_link(helper_assignments_chart, format='jpg', link_text=tr.get_text("download_chart", st.session_state.language)), unsafe_allow_html=True)
 
         # Data explorer
-        st.markdown('<div class="sub-header">Data Explorer</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="sub-header">{tr.get_text("data_explorer", st.session_state.language)}</div>', unsafe_allow_html=True)
 
-        with st.expander("View Raw Data"):
+        with st.expander(tr.get_text("view_raw_data", st.session_state.language)):
             st.dataframe(df)
 
             # Download option
             csv = df.to_csv(index=False).encode('utf-8')
             st.download_button(
-                label="Download Data as CSV",
+                label=tr.get_text("download_data", st.session_state.language),
                 data=csv,
                 file_name=f"transportation_data_{datetime.now().strftime('%Y%m%d')}.csv",
                 mime="text/csv"
@@ -909,17 +1335,17 @@ def main():
     else:
         # Show enhanced welcome message when no data is loaded
         st.markdown('<div class="card">', unsafe_allow_html=True)
-        st.markdown("""
-        ## 🏆 Welcome to the Aurum Visualization Dashboard
+        st.markdown(f"""
+        ## 🏆 {tr.get_text('welcome_title', st.session_state.language)}
 
-        This powerful tool helps you visualize and analyze transportation data with interactive charts and detailed metrics.
+        {tr.get_text('welcome_subtitle', st.session_state.language)}
 
-        ### Getting Started:
+        ### {tr.get_text('getting_started', st.session_state.language)}
 
-        1. **Select an Excel file** from the dropdown menu and click "Load Selected Data"
-        2. **Upload your own Excel file** using the sidebar or the Upload File tab
+        1. **{tr.get_text('select_excel', st.session_state.language)}**
+        2. **{tr.get_text('upload_own_file', st.session_state.language)}**
 
-        ### Data Format Requirements:
+        ### {tr.get_text('data_format_requirements', st.session_state.language)}
 
         Your Excel file should contain data in these specific columns:
 
@@ -933,19 +1359,17 @@ def main():
         | Driver Name | F2:F1000 | Name of driver |
         | Helper Name | G2:G1000 | Name of helper |
 
-        ### Key Features:
+        ### {tr.get_text('key_features', st.session_state.language)}
 
-        - **Interactive Visualizations**: Explore data through charts and graphs
-        - **Detailed Analytics**: Get insights on truck utilization, driver performance, and more
-        - **Export Capabilities**: Save charts as JPG files for reports and presentations
-        - **Filtering Options**: Analyze data by date ranges and other parameters
-
-        Click any of the navigation buttons in the sidebar to jump to specific sections after loading data.
+        - **{tr.get_text('interactive_visualizations', st.session_state.language)}**
+        - **{tr.get_text('detailed_analytics', st.session_state.language)}**
+        - **{tr.get_text('export_capabilities', st.session_state.language)}**
+        - **{tr.get_text('filtering_options', st.session_state.language)}**
         """)
         st.markdown('</div>', unsafe_allow_html=True)
 
         # Show sample visualization
-        st.markdown('<div class="sub-header">Sample Visualization</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="sub-header">{tr.get_text("sample_visualization", st.session_state.language)}</div>', unsafe_allow_html=True)
 
         # Create sample data for preview
         sample_destinations = pd.DataFrame({
@@ -956,7 +1380,7 @@ def main():
         # Show sample chart
         st.plotly_chart(viz.create_destination_chart(sample_destinations), use_container_width=True)
 
-        st.info("👆 This is a sample visualization. Upload your data to see actual insights.")
+        st.info(f"👆 {tr.get_text('sample_visualization_info', st.session_state.language)}")
 
 
 if __name__ == "__main__":
